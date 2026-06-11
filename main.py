@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, status
 from modelos.clientes import Cliente, ClienteCrear, ClienteEditar
 from modelos.facturas import Factura, FacturaCrear, FacturaEditar
-from modelos.transacciones import Transaccion,TrasaccionCrear, TrasaccionEditar
+from modelos.transacciones import Transaccion,TransaccionCrear, TransaccionEditar
 
 
 app = FastAPI()
@@ -90,18 +90,23 @@ async def CrearFactura(cliente_id: int, datos_factura: FacturaCrear):
     for cliente in ListaClientes:
         if cliente.id == cliente_id:
            cliente_encontrado = cliente
-    #si no existe el cliente
+    # MENSAJE si no existe el cliente
     if not cliente_encontrado:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Cliente con id {cliente_id} no existe")
     
     #validar datos de la factura
     factura_validada = Factura.model_validate(datos_factura.model_dump())
     factura_validada.cliente = cliente_encontrado
+    
+    
     #id de la factura
     factura_validada.id = len(ListaFacturas) + 1
-    
+    ListaFacturas.append(factura_validada)
 
     return factura_validada
+
+
+
 
 @app.patch("/facturas/{factura_id}", response_model=Factura)
 async def EditarFactura(factura_id: int, datos_factura: Factura):
@@ -111,25 +116,50 @@ async def EditarFactura(factura_id: int, datos_factura: Factura):
 async def EliminarFactura(factura_id: int):
     pass
 
+
+
+
+
 #||||||||||||||||||||||||||||||||
 #crear los endpoints para trasacciones
 
-@app.get("/trasacciones", response_model=list[Transaccion])
-async def ListarTrasacciones():
+@app.get("/transacciones", response_model=list[Transaccion])
+async def ListarTransacciones():
+    return ListaTrasacciones
+
+@app.get("/transacciones/{transaccion_id}", response_model=Transaccion)
+async def ListarTransaccion(transaccion_id: int):
     pass
 
-@app.get("/trasacciones/{trasaccion_id}", response_model=Transaccion)
-async def ListarTrasaccion(trasaccion_id: int):
+
+
+@app.post("/transacciones/{factura_id}", response_model=Transaccion)
+async def CrearTransaccion(factura_id: int, datos_transaccion: TransaccionCrear):
+    #buscar una transaccion en la lista transacciones
+    transaccion_encontrada = None
+    for factura in ListaFacturas:
+        if factura.id == factura_id:
+           factura_encontrada = factura
+    #MENSAJE si no existe la factura
+    if not factura_encontrada:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"La Factura con id {factura_id} no existe")
+    
+    #validar datos de la trasaccion
+    transaccion_validada = Transaccion.model_validate(datos_transaccion.model_dump())
+    transaccion_validada.factura_id = factura_id
+    factura_encontrada.transacciones.append(transaccion_validada)
+    
+    #id de la trasaccion
+    transaccion_validada.id = len(ListaTrasacciones) + 1
+    return transaccion_validada
+
+
+
+
+@app.patch("/transacciones/{transaccion_id}", response_model=Transaccion)
+async def EditarTransaccion(transaccion_id: int, datos_transaccion: Transaccion):
     pass
 
-@app.post("/trasacciones/{factura_id}", response_model=Transaccion)
-async def CrearTrasaccion(factura_id: int, datos_trasaccion: TrasaccionCrear):
-    pass
-
-@app.patch("/trasacciones/{trasaccion_id}", response_model=Transaccion)
-async def EditarTrasaccion(trasaccion_id: int, datos_trasaccion: Transaccion):
-    pass
-
-@app.delete("/trasacciones/{trasaccion_id}", response_model=Transaccion)
-async def EliminarTrasaccion(trasaccion_id: int):
+@app.delete("/transacciones/{transaccion_id}", response_model=Transaccion)
+async def EliminarTransaccion(transaccion_id: int):
     pass
