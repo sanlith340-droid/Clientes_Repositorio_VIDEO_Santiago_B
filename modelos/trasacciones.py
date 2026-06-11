@@ -8,5 +8,8 @@ class TrasaccionBase(BaseModel):
 class TrasaccionCrear(TrasaccionBase):
     pass
 
+class TrasaccionEditar(TrasaccionBase):
+    pass
+
 class Trasaccion(TrasaccionBase):
     id: int | None = None

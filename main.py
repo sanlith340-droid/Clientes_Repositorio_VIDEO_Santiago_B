@@ -1,9 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from modelos.clientes import Cliente, ClienteCrear, ClienteEditar
+from modelos.facturas import Factura, FacturaCrear, FacturaEditar
+from modelos.trasacciones import Transaccion, TrasaccionCrear, TrasaccionEditar
+
 
 app = FastAPI()
 
 ListaClientes: list[Cliente] = []
+ListaFacturas: list[Factura] = []
+ListaTrasacciones: list[Transaccion] = []
 
 #endpoint, para obtener o listar todos los clientes
 
@@ -51,4 +56,59 @@ async def EditarCliente(cliente_id: int, datos_cliente: ClienteEditar):
 
     raise HTTPException(status_code=400, detail=f"El cliente con id {cliente_id} no existe")
 
-    
+#endpoint, para eliminar un cliente, y agregar a la lista
+
+@app.delete("/clientes/{cliente_id}", response_model=Cliente)
+async def EliminarCliente(cliente_id: int):
+    for i, cliente in enumerate(ListaClientes):
+        if cliente.id == cliente_id:
+            ClienteEliminado = ListaClientes.pop(i)
+            return ClienteEliminado
+
+    raise HTTPException(status_code=400, detail=f"El cliente con id {cliente_id} no existe")
+
+#||||||||||||||||||||||||||||||||
+#crear los endpoints para facturas
+
+@app.get("/facturas", response_model=list[Factura])
+async def ListarFacturas():
+    return ListaFacturas
+
+@app.get("/facturas/{factura_id}", response_model=Factura)
+async def ListarFactura(factura_id: int):
+    pass
+
+@app.post("/facturas", response_model=Factura)
+async def CrearFactura(cliente_id: int, datos_factura: Factura):
+    pass
+
+@app.patch("/facturas/{factura_id}", response_model=Factura)
+async def EditarFactura(factura_id: int, datos_factura: Factura):
+    pass
+
+@app.delete("/facturas/{factura_id}", response_model=Factura)
+async def EliminarFactura(factura_id: int):
+    pass
+
+#||||||||||||||||||||||||||||||||
+#crear los endpoints para trasacciones
+
+@app.get("/trasacciones", response_model=list[Transaccion])
+async def ListarTrasacciones():
+    pass
+
+@app.get("/trasacciones/{trasaccion_id}", response_model=Transaccion)
+async def ListarTrasaccion(trasaccion_id: int):
+    pass
+
+@app.post("/trasacciones/{factura_id}", response_model=Transaccion)
+async def CrearTrasaccion(factura_id: int, datos_trasaccion: TrasaccionCrear):
+    pass
+
+@app.patch("/trasacciones/{trasaccion_id}", response_model=Transaccion)
+async def EditarTrasaccion(trasaccion_id: int, datos_trasaccion: Trasaccion):
+    pass
+
+@app.delete("/trasacciones/{trasaccion_id}", response_model=Transaccion)
+async def EliminarTrasaccion(trasaccion_id: int):
+    pass
