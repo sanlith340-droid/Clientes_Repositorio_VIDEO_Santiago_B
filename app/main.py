@@ -1,3 +1,5 @@
+#error en main
+
 from fastapi import FastAPI, HTTPException, status
 from app.modelos.clientes import Cliente, Clientecrear, ClienteEditar
 from app.modelos.facturas import Factura, FacturaCrear, FacturaEditar

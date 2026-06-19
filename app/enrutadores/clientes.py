@@ -1,3 +1,6 @@
+#modulo corregir 
+
+
 from fastapi import APIRouter, HTTPException,status
 from app.modelos.clientes import Cliente, Clientecrear, ClienteEditar
 from ..listas import lista_clientes
