@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 #no se debe incluir los entrnos virtuales
 .mi env/
 
 #pycache
 __pycache__/
 
+=======
+No se debe incluir los entornos virtuales venv/
+#pycache
+__pycache__/
+>>>>>>> f3786b8d242ecf9db67ad78ddb117ed5b98668c7
