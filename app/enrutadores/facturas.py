@@ -1,3 +1,5 @@
+#problamas con las facturas 
+
 from fastapi import APIRouter, HTTPException, status
 from app.modelos.facturas import Factura,FacturaCrear, FacturaEditar
 from app.modelos.clientes import Cliente, Clientecrear, ClienteEditar
